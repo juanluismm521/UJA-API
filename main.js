@@ -1,7 +1,7 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
 const app = express();
-const PORT = 3000; // Puedes cambiar el puerto si lo necesitas
+const PORT = 80;
 
 app.use(express.json());
 
