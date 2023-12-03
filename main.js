@@ -11,10 +11,10 @@ app.get("/hola", async (req, res) => {
 
 // Ruta para el login
 app.post("/login", async (req, res) => {
-  const { usuario, contraseña } = req.body;
+  const { usuario, clave } = req.body;
 
   console.log("Usuario: ", usuario);
-  console.log("Clave: ", contraseña);
+  console.log("Clave: ", clave);
 
   // Iniciar Puppeteer
   const browser = await puppeteer.launch({ headless: "new" });
@@ -32,7 +32,7 @@ app.post("/login", async (req, res) => {
 
     // Rellenar el formulario con el usuario y contraseña pasados
     await page.type("#username", usuario);
-    await page.type("#password", contraseña);
+    await page.type("#password", clave);
 
     // Ejecutar el submit del formulario
     await page.click("#submit_button");
