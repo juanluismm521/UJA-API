@@ -1,13 +1,17 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
 require("dotenv").config();
+const cors = require('cors');
 const app = express();
 const PORT = 80;
 
 app.use(express.json());
 
+// Habilitar CORS para todas las solicitudes
+app.use(cors());
+
 app.get("/", async (req, res) => {
-  res.status(200).send("Hola, la JuanLuApi Funciona");
+  res.status(200).send("Hola, bienvenido a la Juanlu API");
 });
 
 // Ruta para el login
