@@ -1,12 +1,13 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
+require("dotenv").config();
 const app = express();
 const PORT = 80;
 
 app.use(express.json());
 
-app.get("/hola", async (req, res) => {
-  res.status(200).send("Hola");
+app.get("/", async (req, res) => {
+  res.status(200).send("Hola, la JuanLuApi Funciona");
 });
 
 // Ruta para el login
@@ -17,7 +18,18 @@ app.post("/login", async (req, res) => {
   console.log("Clave: ", clave);
 
   // Iniciar Puppeteer
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await puppeteer.launch({
+    args: [
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+    ],
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  });
   const page = await browser.newPage();
 
   try {
