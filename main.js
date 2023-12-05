@@ -55,30 +55,20 @@ app.post("/login", async (req, res) => {
 
     // Verificar si la URL después del login corresponde a la URL esperada para el inicio de sesión exitoso
     try {
-      await page.waitForSelector("#user-menu-toggle", { timeout: 5000 });
+      await page.waitForSelector("#user-menu-toggle", { timeout: 3000 });
       // Correcto: Navegar a la página de edición del usuario
-
-      await page.goto("https://platea.ujaen.es/user/edit.php");
-      await page.waitForSelector('#id_firstname');
-
-      // Leer valores de los campos de entrada
-      const firstName = await page.$eval(
-        "#id_firstname",
-        (input) => input.value
-      );
-      const lastName = await page.$eval("#id_lastname", (input) => input.value);
-      const email = await page.$eval("#id_email", (input) => input.value);
-
-      // Obtener el src de la imagen con la clase userpicture
-      const userPictureSrc = await page.$$eval(".userpicture", (images) => {
-        const userPicture = images.find((img) => img.getAttribute("src"));
-        return userPicture
-          ? userPicture.getAttribute("src")
-          : "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small/no-image-available-icon-vector.jpg";
-      });
 
       await page.goto("https://platea.ujaen.es/user/profile.php?showallcourses=1");
       await page.waitForSelector(".card-body");
+
+      // Leer valores de los campos de entrada
+      const nombre = await page.$eval('h1.h2', (element) => element.textContent.trim());
+      const email = await page.$eval('dd a', (element) => element.textContent.trim());
+
+      // Obtener el src de la imagen con la clase userpicture
+      const userPictureSrc = await page.$eval('.userpicture', (img) => 
+      img.getAttribute('src') ||
+       'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small/no-image-available-icon-vector.jpg');
 
       // Obtener el texto de todos los elementos <a> dentro de los elementos <li> dentro del div
       const cursos = await page.evaluate(() => {
@@ -89,23 +79,17 @@ app.post("/login", async (req, res) => {
       });
 
 
-      // Mostrar los valores por consola
-      console.log("Valores obtenidos:");
-      console.log("First Name:", firstName);
-      console.log("Last Name:", lastName);
-      console.log("Email:", email);
-      console.log("User Picture Src:", userPictureSrc);
-      console.log("Cursos: ", cursos);
-
       // Crear un objeto sesión con los valores obtenidos
       const sesion = {
-        firstName,
-        lastName,
+        nombre,
         email,
         userPictureSrc,
         cursos
       };
 
+      // Mostrar los valores por consola
+      console.log("Valores obtenidos: ", sesion);
+  
       // Cerrar el navegador
       await browser.close();
 
