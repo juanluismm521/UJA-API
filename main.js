@@ -55,7 +55,7 @@ app.post("/login", async (req, res) => {
 
     // Verificar si la URL después del login corresponde a la URL esperada para el inicio de sesión exitoso
     try {
-      await page.waitForSelector("#user-menu-toggle", { timeout: 3000 });
+      await page.waitForSelector("#user-menu-toggle", { timeout: 6000 });
       // Correcto: Navegar a la página de edición del usuario
 
       await page.goto("https://platea.ujaen.es/user/profile.php?showallcourses=1");
