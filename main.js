@@ -53,23 +53,10 @@ app.post("/login", async (req, res) => {
     // Ejecutar el submit del formulario
     await page.click("#submit_button");
 
-    // Esperar a que la página cargue después del login
-    //await page.waitForSelector('#user-menu-toggle');
-    await page.waitForTimeout(1250);
-
-    // Obtenemos la URL actual después del login
-    const loggedInURL = page.url();
-
     // Verificar si la URL después del login corresponde a la URL esperada para el inicio de sesión exitoso
-    if (loggedInURL.includes("https://platea.ujaen.es/my/")) {
-      // Navegar a la página de edición del usuario
-
-      //? --- Obtener las cookies de sesión ---
-      // const cookies = await page.cookies();
-
-      // Mostrar las cookies por consola
-      // console.log('Cookies de sesión:', cookies);
-      //? --- Obtener las cookies de sesión ---
+    try {
+      await page.waitForSelector("#user-menu-toggle", { timeout: 5000 });
+      // Correcto: Navegar a la página de edición del usuario
 
       await page.goto("https://platea.ujaen.es/user/edit.php");
       await page.waitForSelector('#id_firstname');
@@ -124,12 +111,11 @@ app.post("/login", async (req, res) => {
 
       // Enviar el objeto sesión como respuesta
       res.status(200).send(sesion);
-    } else {
+    } catch(error) {
       // Cerrar el navegador
       await browser.close();
       // Enviar respuesta de inicio de sesión no exitoso (código 400 - Bad Request)
-      console.log("Inicio de sesión fallido");
-      res.status(400).send("Inicio de sesión fallido");
+      res.status(400).send("Usuario o clave incorrecta");
     }
   } catch (error) {
     console.error("Error durante el proceso de inicio de sesión:", error);
